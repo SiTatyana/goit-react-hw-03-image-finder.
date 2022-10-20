@@ -1,18 +1,32 @@
-import PropTypes from 'prop-types';
+import axios from "axios";
 
-const URL = 'https://pixabay.com/api/';
-const KEY = '29112900-b21ef4ae161236dc81924b64f';
-const PER_PAGE = 12;
+async function FetchApi (query = "", page = 1, per_page = 12){
+    const ApiKey = "29226751-f0ce60e58b224fb7f016bc6a2";
+    const URL = "https://pixabay.com/api/";
+    try{
+        const response = await axios.get(URL, 
+            {
+                params:{
+                    key: ApiKey,
+                    q: query,
+                    page,
+                    per_page
+                }
+            })
+        // console.log(response);
+        response.data.hits = response.data.hits.map(item => {
+            return {
+                id: item.id,
+                webformatURL: item.webformatURL,
+                largeImageURL: item.largeImageURL
+            }
+        }) 
+        return response.data;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
 
-export const FetchApi = async (name, page) => {
-  const response = await fetch(
-    `${URL}?q=${name}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}`
-  );
-  const data = await response.json();
-  return data;
-};
+export { FetchApi }; 
 
-FetchApi.propTypes = {
-  name: PropTypes.string.isRequired,
-  page: PropTypes.number.isRequired,
-};

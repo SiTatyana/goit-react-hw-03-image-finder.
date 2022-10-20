@@ -1,58 +1,44 @@
-import { Component } from 'react';
-import { ImSearch } from 'react-icons/im';
-import { Header, Form, Button, Input } from './searchBarStyle';
+import { Component } from "react";
+import PropTypes from "prop-types";
+import { FiSearch } from "react-icons/fi";
 
-export class Searchbar extends Component {
-  state = {
-    request: '',
-  };
+export class SearchBar extends Component{
+    state = {
+      request: ""
+    }
+    handleChage = event => {
+        const {name, value} = event.target;
+        this.setState({
+            [name]: value
+        })
+    }
+    handleSubmit = event => {
+        event.preventDefault();
+        this.props.onSubmit(this.state.request.trim());
+    }
+    render(){
+        return(
+            <header className="Searchbar">
+                <form className="SearchForm" onSubmit={this.handleSubmit}>
+                    <button type="submit" className="SearchForm-button">
+                        <FiSearch size={20}/>
+                    </button>
+                    <input
+                    className="SearchForm-input"
+                    type="text"
+                    autoComplete="off"
+                    autoFocus
+                    placeholder="Search images and photos"
+                    onChange={this.handleChage}
+                    name="request"
+                    value={this.state.request}
+                    />
+                </form>
+            </header>
+        )
+    } 
+}
 
-  handleChange = evt => {
-    const { value } = evt.currentTarget;
-    this.setState({
-      request: value.trim(),
-    });
-  };
-
-  handleSubmit = evt => {
-    const { request } = this.state;
-    const { onSubmit } = this.props;
-    const { reset } = this;
-
-    evt.preventDefault();
-    onSubmit(request.toLowerCase());
-    reset();
-  };
-
-  reset = () => {
-    this.setState({
-      request: '',
-    });
-  };
-
-  render() {
-    const { handleSubmit, handleChange } = this;
-    const { request } = this.state;
-
-    return (
-      <Header>
-        <Form onSubmit={handleSubmit}>
-          <Button type="submit">
-            <ImSearch className="icon-serch" />
-          </Button>
-
-          <label>
-            <Input
-              type="text"
-              autoComplete="off"
-              onChange={handleChange}
-              value={request}
-              autoFocus
-              placeholder="Search images and photos"
-            />
-          </label>
-        </Form>
-      </Header>
-    );
-  }
+SearchBar.propTypes = {
+    onSubmit: PropTypes.func
 }

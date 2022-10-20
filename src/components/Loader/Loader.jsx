@@ -1,30 +1,21 @@
-import { Circles, ThreeDots } from 'react-loader-spinner';
+import {ThreeDots } from 'react-loader-spinner';
+import { createPortal } from "react-dom";
 
-export const Loader = ({ onLoad }) => {
-  return (
-    <Circles
-      height="50vh"
-      width="50vw"
-      color="#3f51b5"
-      ariaLabel="circles-loading"
-      wrapperStyle={{}}
-      wrapperClass="loader"
-      visible={onLoad}
-    />
-  );
-};
+const modalPortal = document.querySelector('#modal-root');
 
-export const LoadMoreButton = ({ load }) => {
-  return (
-    <ThreeDots
-      height="60"
-      width="60"
-      radius="9"
-      color="#3f51b5"
-      ariaLabel="three-dots-loading"
-      wrapperStyle={{}}
-      wrapperClass="loaderButton"
-      visible={load}
-    />
-  );
-};
+export const Loader = props => {
+    return (createPortal(
+    <div className="Overlay">
+        <ThreeDots
+             height="80" 
+             width="80" 
+             radius="9"
+             color="#196ede" 
+             ariaLabel="three-dots-loading"
+             wrapperStyle={{}}
+             wrapperClassName=""
+             visible={true}
+              />
+    </div>, modalPortal)
+    )
+}

@@ -1,28 +1,33 @@
-import PropTypes from 'prop-types';
-import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
-import { ImageGalleryList } from './ImageGalleryStyle';
+import { Component } from "react";
+import PropTypes from "prop-types"
+import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
 
-export const ImageGallery = ({ items, isOpen }) => {
-  const imageList = items.map(({ tags, id, webformatURL }) => {
-    return (
-      <ImageGalleryItem
-        key={id}
-        tags={tags}
-        id={id}
-        webformatURL={webformatURL}
-        isOpen={isOpen}
-      />
-    );
-  });
-  return <ImageGalleryList>{imageList}</ImageGalleryList>;
-};
+
+
+export class ImageGallery extends Component{        
+    render(){
+        return(
+            <>
+                <ul className="ImageGallery">
+                    {this.props.images.map((item, id) => 
+                    <ImageGalleryItem 
+                        onClick={this.props.modalOpen}
+                        src={item.webformatURL} 
+                        alt={item.index}
+                        largeImage={item.largeImageURL}
+                        key={id}
+                    />)}
+                </ul>
+            </>
+        )
+    }
+}
 
 ImageGallery.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      tags: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-      webformatURL: PropTypes.string.isRequired,
-    })
-  ),
-};
+    modalOpen: PropTypes.func,
+    images: PropTypes.arrayOf(PropTypes.shape({
+        webformatURL: PropTypes.string,
+        id: PropTypes.number,
+        largeImage: PropTypes.string
+    }))
+}

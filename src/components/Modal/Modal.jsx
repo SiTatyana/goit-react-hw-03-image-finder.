@@ -1,56 +1,35 @@
-import { Component } from 'react';
-import { createPortal } from 'react-dom';
-import { Overlay, ModalOverlay, Image } from './ModalStyle';
+import { Component } from "react";
+import PropTypes from "prop-types"
+import { createPortal } from "react-dom";
+const modalPortal = document.querySelector("#modal-root");
 
-const modalRoot = document.getElementById('root');
-
-export class Modal extends Component {
-  state = {
-    modalImage: {},
-  };
-
-  componentDidMount() {
-    document.addEventListener('keydown', this.closeModal);
-    this.serchImage();
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.closeModal);
-  }
-
-  componentDidUpdate(_, prevProps) {
-    const { idImage } = this.props;
-    if (prevProps.idImage !== idImage) {
+export class Modal extends Component{
+    closeByEsc = () => {
+        this.props.onClick("");
     }
-  }
-
-  serchImage = () => {
-    const { data, idImage } = this.props;
-
-    const search = data.find(({ id }) => {
-      return id === Number(idImage);
-    });
-    return this.setState({
-      modalImage: search,
-    });
-  };
-
-  closeModal = ({ currentTarget, target, code }) => {
-    if (currentTarget === target || code === 'Escape') {
-      this.props.onClose();
+    overlayClickHendler = event => {
+        if(event.target === event.currentTarget){
+            this.props.onClick("");
+        }
     }
-  };
+    componentDidMount(){
+        window.addEventListener("keydown", this.closeByEsc);
+    }
+    componentWillUnmount(){
+        window.removeEventListener("keydown", this.closeByEsc);
+    }
+    render(){
+        return(
+            createPortal(<div onClick={this.overlayClickHendler} className="Overlay">
+                <div className="Modal">
+                    <img src={this.props.source} alt="Big img"/>
+                </div>
+            </div>, modalPortal)
+        )
+    }
+}
 
-  render() {
-    const { largeImageURL, tags } = this.state.modalImage;
-
-    return createPortal(
-      <Overlay onClick={this.closeModal}>
-        <ModalOverlay>
-          <Image src={largeImageURL} alt={tags} />
-        </ModalOverlay>
-      </Overlay>,
-      modalRoot
-    );
-  }
+Modal.propTypes = {
+    source: PropTypes.string,
+    onClick: PropTypes.func
 }
